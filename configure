@@ -11,6 +11,9 @@ CONFIG=".${CONFIG}.tmp"
 TMPDIR=$(mktemp -d config.XXXXXX)
 trap 'status=$?; rm -rf $TMPDIR; rm -f $CONFIG; exit $status' EXIT HUP INT QUIT TERM
 
+SUBMODULE_LIBBPF=0
+ARCH_INCLUDES=
+
 check_opts()
 {
     : ${PRODUCTION:=0}
@@ -70,7 +73,7 @@ check_toolchain()
 
     CLANG=$(find_tool clang "$CLANG")
 
-    for TOOL in $PKG_CONFIG $CC $OBJCOPY $CLANG $M4 $READELF; do
+    for TOOL in $PKG_CONFIG $CC $OBJCOPY $CLANG $M4 $READELF $BPFTOOL; do
         if [ ! $(command -v ${TOOL} 2>/dev/null) ]; then
             echo "*** ERROR: Cannot find tool ${TOOL}" ;
             exit 1;
